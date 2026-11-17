@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}{{ server.name }} · Host Monitor{% endblock %}
+{% block main_class %} main-dashboard{% endblock %}
+
+{% block content %}
+<section class="dashboard">
+  <header class="dash-intro">
+    <div class="dash-intro-row">
+      <div>
+        <p class="eyebrow"><a class="text-link" href="{{ url_for('main.home') }}">← Dashboard</a></p>
+        <h1>{{ server.name }}</h1>
+        <p class="dash-lede mono">{{ server.host }} · {{ server.ssh_user }} · {{ server.auth_type }}</p>
+      </div>
+      <div class="poll-controls">
+        <label class="toggle">
+          <input type="checkbox" id="auto-refresh" checked>
+          <span>Auto-refresh</span>
+        </label>
+        <button type="button" class="btn btn-secondary" id="manual-refresh">Refresh now</button>
+      </div>
+    </div>
+  </header>
+
+  {% if not metrics.ok %}
+  <p class="flash flash-warning">{{ metrics.error or 'Unable to collect metrics' }}</p>
+  {% endif %}
+
+  <div class="metrics-grid" id="metrics-grid"
+       data-poll-url="{{ url_for('main.api_metrics', server_id=server.id if server.id is not none else 'local') }}"
+       data-poll-seconds="{{ poll_seconds }}">
+    <article class="metric-card"><h3 class="metric-title">CPU</h3><p class="metric-desc">Overall usage %</p><p class="metric-value" id="m-cpu">—</p></article>
+    <article class="metric-card"><h3 class="metric-title">Memory</h3><p class="metric-desc">Used / free</p><p class="metric-value" id="m-memory">—</p></article>
+    <article class="metric-card"><h3 class="metric-title">Disk</h3><p class="metric-desc">Root filesystem</p><p class="metric-value" id="m-disk">—</p></article>
+    <article class="metric-card"><h3 class="metric-title">Load average</h3><p class="metric-desc">1 / 5 / 15 min</p><p class="metric-value" id="m-load">—</p></article>
+    <article class="metric-card"><h3 class="metric-title">Network</h3><p class="metric-desc">RX / TX</p><p class="metric-value" id="m-network">—</p></article>
+    <article class="metric-card"><h3 class="metric-title">Listening ports</h3><p class="metric-desc">TCP / UDP</p><p class="metric-value" id="m-ports">—</p></article>
+    <article class="metric-card metric-card-wide"><h3 class="metric-title">Processes</h3><p class="metric-desc">Top by CPU / memory</p><div class="metric-value" id="m-processes">—</div></article>
+    <article class="metric-card"><h3 class="metric-title">Uptime</h3><p class="metric-desc">Host uptime</p><p class="metric-value" id="m-uptime">—</p></article>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/poll.js') }}"></script>
+{% endblock %}

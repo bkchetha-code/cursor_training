@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Servers · Host Monitor{% endblock %}
+{% block main_class %} main-dashboard{% endblock %}
+
+{% block content %}
+<section class="dashboard">
+  <header class="dash-intro-row">
+    <div>
+      <h1>Server inventory</h1>
+      <p class="dash-lede">Add Linux hosts to monitor over SSH (agentless, read-only). Prefer key paths over stored passwords.</p>
+    </div>
+    <a class="btn" href="{{ url_for('main.servers_new') }}">Add server</a>
+  </header>
+
+  {% if servers %}
+  <table class="data-table">
+    <thead>
+      <tr><th>Name</th><th>Host</th><th>User</th><th>Auth</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for s in servers %}
+      <tr>
+        <td><a href="{{ url_for('main.server_detail', server_id=s.id) }}">{{ s.name }}</a></td>
+        <td class="mono">{{ s.host }}</td>
+        <td class="mono">{{ s.ssh_user }}</td>
+        <td>{{ s.auth_type }}{% if s.auth_type == 'key' and s.has_key %} · key{% elif s.auth_type == 'password' and s.has_password %} · set{% endif %}</td>
+        <td class="row-actions">
+          <a class="text-link" href="{{ url_for('main.servers_edit', server_id=s.id) }}">Edit</a>
+          <form method="post" action="{{ url_for('main.servers_delete', server_id=s.id) }}" onsubmit="return confirm('Delete {{ s.name }}?');">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <button type="submit" class="text-link danger">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="servers-panel">
+    <p class="servers-empty">No servers yet. Add one to collect remote metrics via allowlisted SSH commands.</p>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

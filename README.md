@@ -1,16 +1,20 @@
 # Host Monitor (Linux demo)
 
-Local Flask **Host Monitor** demo for read-only Linux server metrics (CPU, memory, network, ports, and more).  
-Internal L1/L2/L3 use — **not** for production.
+Local Flask **Host Monitor** for read-only Linux metrics (CPU, memory, disk, load, network, ports, processes, uptime).  
+Internal L1/L2/L3 demo — **not** for production.
 
-## Security (local demo)
+Remote: `https://github.com/bkchetha-code/cursor_training.git`
 
-- App binds to **`0.0.0.0:5243`** by default so other hosts can reach the demo UI.
-- Keep secrets out of git: copy `.env.example` → `.env` if needed; never commit `.env` or `*.db`.
-- `SECRET_KEY` from `FLASK_SECRET_KEY` (demo default only if unset — rotate for shared demos).
+## Security (demo)
+
+- Binds **`0.0.0.0:5243`** so other hosts can reach the UI.
+- Never commit `.env` or `*.db` (see `.gitignore`).
+- `FLASK_SECRET_KEY` from env (demo default if unset — rotate for shared demos).
 - Passwords stored as **Werkzeug hashes** only; never logged.
-- Session cookie: **HttpOnly** + `SameSite=Lax`; idle timeout **30 minutes**.
-- Simple CSRF tokens on login/logout forms (demo-level).
+- Session: HttpOnly + SameSite=Lax; idle timeout 30 minutes; CSRF on forms.
+- Metrics via **allowlisted** read-only commands only (local `/proc` or Paramiko SSH).
+- Prefer SSH **key path** over storing passwords (demo-only if password auth used).
+- UI never renders SSH secrets.
 
 ## Quick start
 
@@ -21,37 +25,51 @@ pip install -r requirements.txt
 python app.py
 ```
 
-Open `http://<host-ip>:5243` (or http://127.0.0.1:5243 on this machine).
-
-Sign in with default seeded user:
+Open `http://<host-ip>:5243` → sign in → view localhost metrics → optionally **Servers** → add a host → open detail.
 
 | Field | Default |
 |-------|---------|
 | Username | `admin` |
-| Password | `admin123` (or `ADMIN_PASSWORD` env at **first** DB seed) |
+| Password | `admin123` (or `ADMIN_PASSWORD` at first DB seed) |
 
-Override via env: `FLASK_HOST`, `FLASK_PORT`, `FLASK_SECRET_KEY`, `ADMIN_PASSWORD`, `DATABASE_PATH`, `SESSION_IDLE_SECONDS`.
+Change password: nav **Password** (current + new ≥ 8 chars).
 
-Change-password UI comes in a later TODO step.
+Env: `FLASK_HOST`, `FLASK_PORT` (5243), `FLASK_SECRET_KEY`, `ADMIN_PASSWORD`, `DATABASE_PATH`, `SESSION_IDLE_SECONDS`.
 
-## Tests
+## Metrics
+
+| Panel | Meaning |
+|-------|---------|
+| CPU | Busy share from `/proc/stat` (approx %) |
+| Memory | Used / available from `/proc/meminfo` |
+| Disk | Root mount from `df -P -B1` |
+| Load | 1 / 5 / 15 min from `/proc/loadavg` |
+| Network | Sum RX/TX bytes from `/proc/net/dev` (excl. lo) |
+| Ports | Listening TCP/UDP count from `ss -lntu` |
+| Processes | Top CPU processes from `ps` |
+| Uptime | From `/proc/uptime` |
+
+Auto-refresh every **8s** (toggle / Refresh now). `/api/metrics` requires login and is lightly rate-limited.
+
+## Servers
+
+Add name, host/IP, SSH user, auth type (key path preferred, password demo-only). Localhost is always monitored without SSH.
+
+## Tests & CI
 
 ```bash
-source .venv/bin/activate
 pytest
 ```
 
-## Project layout
+GitHub Actions (`.github/workflows/ci.yml`) runs `pytest` on push/PR with Python **3.12** and dummy env vars only. Check the **Actions** tab on GitHub for status.
+
+## Layout
 
 ```text
-app/           Flask app factory, auth, db, routes
-templates/     Jinja templates
-static/        CSS / assets
+app/           Flask factory, auth, db, collector, metrics, routes
+templates/     Jinja UI
+static/        CSS + poll.js
 tests/         Unit tests
 docs/          PRD + TODO
+.github/       CI workflow
 ```
-
-## Docs
-
-- [Requirements (PRD)](docs/requirements.md)
-- [Implementation TODO](docs/TODO.md)

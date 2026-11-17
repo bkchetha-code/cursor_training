@@ -120,11 +120,11 @@ No Docker. No cloud deploy. No external monitoring agents required for the demo.
 
 ## 8. Acceptance criteria (demo)
 
-- [ ] User can sign in as `admin` with hashed password verification
-- [ ] User can log out; idle session expires
-- [ ] User can add / edit / delete / list Linux servers
-- [ ] Dashboard lists servers with summary status/metrics
-- [ ] Detail page shows CPU, memory, network, ports, disk, processes, uptime
-- [ ] Metrics refresh via polling (5–10s) and manual refresh
-- [ ] UI is read-only for metrics; app runs locally via Flask
-- [ ] SSH failure is surfaced in the UI without taking down the app
+- [x] User can sign in as `admin` with hashed password verification
+- [x] User can log out; idle session expires
+- [x] User can add / edit / delete / list Linux servers
+- [x] Dashboard lists servers with summary status/metrics
+- [x] Detail page shows CPU, memory, network, ports, disk, processes, uptime
+- [x] Metrics refresh via polling (5–10s) and manual refresh
+- [x] UI is read-only for metrics; app runs locally via Flask
+- [x] SSH failure is surfaced in the UI without taking down the app

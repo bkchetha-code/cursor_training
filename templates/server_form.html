@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} · Host Monitor{% endblock %}
+{% block main_class %} main-auth{% endblock %}
+
+{% block content %}
+<section class="auth auth-wide">
+  <h1>{{ title }}</h1>
+  <p class="lede">Demo only — prefer SSH key path. Stored passwords stay in local SQLite and must not be used in production.</p>
+  {% if error %}<p class="flash flash-error" role="alert">{{ error }}</p>{% endif %}
+  <form class="auth-form" method="post" action="{{ action }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <label class="field"><span>Display name</span><input name="name" required value="{{ form.name }}"></label>
+    <label class="field"><span>Hostname or IP</span><input name="host" required value="{{ form.host }}" placeholder="192.168.1.10"></label>
+    <label class="field"><span>SSH user</span><input name="ssh_user" required value="{{ form.ssh_user }}"></label>
+    <label class="field"><span>Auth type</span>
+      <select name="auth_type">
+        <option value="key" {% if form.auth_type == 'key' %}selected{% endif %}>SSH key path</option>
+        <option value="password" {% if form.auth_type == 'password' %}selected{% endif %}>Password (demo only)</option>
+      </select>
+    </label>
+    <label class="field"><span>Private key path</span><input name="key_path" value="{{ form.key_path }}" placeholder="/home/user/.ssh/id_rsa"></label>
+    <label class="field"><span>SSH password</span><input type="password" name="password" value="" autocomplete="new-password" placeholder="Leave blank on edit to keep"></label>
+    <div class="form-actions">
+      <button type="submit" class="btn">Save</button>
+      <a class="btn btn-secondary" href="{{ url_for('main.servers_list') }}">Cancel</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

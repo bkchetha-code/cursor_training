@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block head %}{% endblock %}
 </head>
 <body>
   <div class="page">
@@ -18,6 +19,9 @@
       </div>
       <nav class="nav" aria-label="Primary">
         {% if current_username %}
+        <a class="nav-link" href="{{ url_for('main.home') }}">Dashboard</a>
+        <a class="nav-link" href="{{ url_for('main.servers_list') }}">Servers</a>
+        <a class="nav-link" href="{{ url_for('main.change_password') }}">Password</a>
         <form class="nav-form" method="post" action="{{ url_for('main.logout') }}" title="Sign out">
           <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
           <button type="submit" class="user-chip">{{ current_username }}</button>
@@ -42,5 +46,6 @@
       {% block content %}{% endblock %}
     </main>
   </div>
+  {% block scripts %}{% endblock %}
 </body>
 </html>

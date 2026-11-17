@@ -6,55 +6,100 @@
 {% block content %}
 <section class="dashboard" aria-labelledby="dash-heading">
   <header class="dash-intro">
-    <h1 id="dash-heading">Monitoring dashboard</h1>
-    <p class="dash-lede">
-      Live host metrics for the machine running this app. Panels below are placeholders until metrics are wired.
-    </p>
+    <div class="dash-intro-row">
+      <div>
+        <h1 id="dash-heading">Monitoring dashboard</h1>
+        <p class="dash-lede">
+          Live host metrics for localhost and inventory servers. Data refreshes every {{ poll_seconds }}s (toggle below).
+        </p>
+      </div>
+      <div class="poll-controls">
+        <label class="toggle">
+          <input type="checkbox" id="auto-refresh" checked>
+          <span>Auto-refresh</span>
+        </label>
+        <button type="button" class="btn btn-secondary" id="manual-refresh">Refresh now</button>
+      </div>
+    </div>
   </header>
 
   <section class="servers-panel" aria-labelledby="servers-heading">
-    <h2 id="servers-heading" class="panel-label">Servers</h2>
+    <div class="panel-head">
+      <h2 id="servers-heading" class="panel-label">Servers</h2>
+      <a class="text-link" href="{{ url_for('main.servers_list') }}">Manage inventory</a>
+    </div>
+    {% if servers %}
+    <ul class="server-list">
+      {% for s in servers %}
+      <li>
+        <a href="{{ url_for('main.server_detail', server_id=s.id) }}">{{ s.name }}</a>
+        <span class="mono muted">{{ s.host }} · {{ s.ssh_user }} · {{ s.auth_type }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
     <p class="servers-empty">
-      No servers yet — inventory arrives in a later phase. Metrics will always reflect localhost.
+      No servers yet — add inventory under Servers. Metrics always include localhost.
     </p>
+    {% endif %}
   </section>
 
-  <div class="metrics-grid" role="list">
-    <article class="metric-card" role="listitem">
+  <div class="summary-grid" id="summary-grid">
+    {% for s in summaries %}
+    <a class="summary-card {% if not s.ok %}is-error{% endif %}"
+       href="{% if s.id %}{{ url_for('main.server_detail', server_id=s.id) }}{% else %}{{ url_for('main.localhost_detail') }}{% endif %}">
+      <h3>{{ s.name }}</h3>
+      <p class="mono muted">{{ s.host }}</p>
+      {% if s.ok %}
+      <p class="metric-line">CPU <strong>{{ s.cpu_percent if s.cpu_percent is not none else '—' }}%</strong>
+         · Mem <strong>{{ s.mem_percent if s.mem_percent is not none else '—' }}%</strong></p>
+      {% else %}
+      <p class="error-line">{{ s.error or 'Collection failed' }}</p>
+      {% endif %}
+    </a>
+    {% endfor %}
+  </div>
+
+  <div class="metrics-grid" id="metrics-grid" data-poll-url="{{ url_for('main.api_metrics') }}" data-poll-seconds="{{ poll_seconds }}">
+    <article class="metric-card" data-metric="cpu">
       <h3 class="metric-title">CPU</h3>
       <p class="metric-desc">Overall usage %</p>
-      <p class="metric-value is-empty">No data yet</p>
+      <p class="metric-value" id="m-cpu">Loading…</p>
     </article>
-    <article class="metric-card" role="listitem">
+    <article class="metric-card" data-metric="memory">
       <h3 class="metric-title">Memory</h3>
       <p class="metric-desc">Used / free</p>
-      <p class="metric-value is-empty">No data yet</p>
+      <p class="metric-value" id="m-memory">Loading…</p>
     </article>
-    <article class="metric-card" role="listitem">
+    <article class="metric-card" data-metric="disk">
       <h3 class="metric-title">Disk</h3>
       <p class="metric-desc">Root filesystem</p>
-      <p class="metric-value is-empty">No data yet</p>
+      <p class="metric-value" id="m-disk">Loading…</p>
     </article>
-    <article class="metric-card" role="listitem">
+    <article class="metric-card" data-metric="load">
       <h3 class="metric-title">Load average</h3>
       <p class="metric-desc">1 / 5 / 15 min</p>
-      <p class="metric-value is-empty">No data yet</p>
+      <p class="metric-value" id="m-load">Loading…</p>
     </article>
-    <article class="metric-card" role="listitem">
+    <article class="metric-card" data-metric="network">
       <h3 class="metric-title">Network</h3>
       <p class="metric-desc">RX / TX</p>
-      <p class="metric-value is-empty">No data yet</p>
+      <p class="metric-value" id="m-network">Loading…</p>
     </article>
-    <article class="metric-card" role="listitem">
+    <article class="metric-card" data-metric="ports">
       <h3 class="metric-title">Listening ports</h3>
       <p class="metric-desc">TCP / UDP</p>
-      <p class="metric-value is-empty">No data yet</p>
+      <p class="metric-value" id="m-ports">Loading…</p>
     </article>
-    <article class="metric-card metric-card-wide" role="listitem">
+    <article class="metric-card metric-card-wide" data-metric="processes">
       <h3 class="metric-title">Processes</h3>
       <p class="metric-desc">Top by CPU / memory</p>
-      <p class="metric-value is-empty">No data yet</p>
+      <div class="metric-value" id="m-processes">Loading…</div>
     </article>
   </div>
 </section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/poll.js') }}"></script>
 {% endblock %}

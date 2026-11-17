@@ -36,96 +36,96 @@ Reference: [requirements.md](./requirements.md)
 
 ## 3. CI/CD (GitHub Actions) — early, keep green
 
-- [ ] Add `.github/workflows/ci.yml` — install deps, run `pytest` on push/PR
-- [ ] **Security:** No secrets in workflow; use dummy env for tests only
-- [ ] Pin or constrain Python version in CI (e.g. 3.11/3.12)
-- [ ] **Docs:** One paragraph in README — what CI runs and how to check status
+- [x] Add `.github/workflows/ci.yml` — install deps, run `pytest` on push/PR
+- [x] **Security:** No secrets in workflow; use dummy env for tests only
+- [x] Pin or constrain Python version in CI (e.g. 3.11/3.12)
+- [x] **Docs:** One paragraph in README — what CI runs and how to check status
 
 ---
 
 ## 4. Change password (demo admin)
 
-- [ ] Change-password form (current + new + confirm)
-- [ ] **Security:** Re-verify current password; reject weak/empty new password (minimal rules)
-- [ ] Unit tests for change-password success/fail
-- [ ] **Docs:** Update README with change-password steps
+- [x] Change-password form (current + new + confirm)
+- [x] **Security:** Re-verify current password; reject weak/empty new password (minimal rules)
+- [x] Unit tests for change-password success/fail
+- [x] **Docs:** Update README with change-password steps
 
 ---
 
 ## 5. Server inventory (CRUD) — no SSH yet
 
-- [ ] SQLite table for servers: name, host/IP, SSH user, auth type, key path or password field
-- [ ] **Security:** Prefer key path over storing SSH passwords; if password stored, note demo-only risk in docs
-- [ ] List servers page (empty state OK)
-- [ ] Add server form + create action
-- [ ] Edit server form + update action
-- [ ] Delete server with simple confirm
-- [ ] **Security:** All CRUD behind login; validate host/IP input (basic); escape output in templates (Jinja autoescape on)
-- [ ] Unit tests: CRUD happy path + unauthorized access denied
-- [ ] **Docs:** How to add a server (fields explained); warn not for production secrets
+- [x] SQLite table for servers: name, host/IP, SSH user, auth type, key path or password field
+- [x] **Security:** Prefer key path over storing SSH passwords; if password stored, note demo-only risk in docs
+- [x] List servers page (empty state OK)
+- [x] Add server form + create action
+- [x] Edit server form + update action
+- [x] Delete server with simple confirm
+- [x] **Security:** All CRUD behind login; validate host/IP input (basic); escape output in templates (Jinja autoescape on)
+- [x] Unit tests: CRUD happy path + unauthorized access denied
+- [x] **Docs:** How to add a server (fields explained); warn not for production secrets
 
 ---
 
 ## 6. SSH collector skeleton (read-only)
 
-- [ ] Add Paramiko (or similar) dependency
-- [ ] Implement connect + run **allowlisted** read-only commands only
-- [ ] **Security:** Hard deny shell metacharacters / arbitrary user commands; fixed command list only
-- [ ] Return structured errors on auth/timeout/unreachable (no app crash)
-- [ ] Unit tests with mocked SSH (success + failure)
-- [ ] **Docs:** Note agentless SSH, required remote permissions, localhost testing tip
+- [x] Add Paramiko (or similar) dependency
+- [x] Implement connect + run **allowlisted** read-only commands only
+- [x] **Security:** Hard deny shell metacharacters / arbitrary user commands; fixed command list only
+- [x] Return structured errors on auth/timeout/unreachable (no app crash)
+- [x] Unit tests with mocked SSH (success + failure)
+- [x] **Docs:** Note agentless SSH, required remote permissions, localhost testing tip
 
 ---
 
 ## 7. Metrics: CPU, memory, uptime
 
-- [ ] Collect and parse CPU %, memory used/free, uptime via allowlisted commands
-- [ ] **Security:** Keep command allowlist; no writable remote ops
-- [ ] Show values on server detail page (placeholders → real data)
-- [ ] Unit tests for parsers (sample command output fixtures)
-- [ ] **Docs:** Brief metric definitions (what each number means)
+- [x] Collect and parse CPU %, memory used/free, uptime via allowlisted commands
+- [x] **Security:** Keep command allowlist; no writable remote ops
+- [x] Show values on server detail page (placeholders → real data)
+- [x] Unit tests for parsers (sample command output fixtures)
+- [x] **Docs:** Brief metric definitions (what each number means)
 
 ---
 
 ## 8. Metrics: disk, network, ports, processes
 
-- [ ] Disk usage per mount
-- [ ] Network basic I/O counters or rates
-- [ ] Listening/open ports summary
-- [ ] Short top process list (CPU/mem)
-- [ ] **Security:** Read-only commands only; truncate/limit process & port output size
-- [ ] Unit tests for each parser + oversized-output handling
-- [ ] **Docs:** Update metrics section with examples / limitations
+- [x] Disk usage per mount
+- [x] Network basic I/O counters or rates
+- [x] Listening/open ports summary
+- [x] Short top process list (CPU/mem)
+- [x] **Security:** Read-only commands only; truncate/limit process & port output size
+- [x] Unit tests for each parser + oversized-output handling
+- [x] **Docs:** Update metrics section with examples / limitations
 
 ---
 
 ## 9. Dashboard overview
 
-- [ ] Dashboard cards/rows: all servers + summary status + key metrics
-- [ ] Show per-server error state when SSH fails (app stays up)
-- [ ] **Security:** No sensitive SSH secrets rendered in UI
-- [ ] Unit/integration tests: dashboard with mocked collectors
-- [ ] **Docs:** Screenshot or short walkthrough of dashboard → detail
+- [x] Dashboard cards/rows: all servers + summary status + key metrics
+- [x] Show per-server error state when SSH fails (app stays up)
+- [x] **Security:** No sensitive SSH secrets rendered in UI
+- [x] Unit/integration tests: dashboard with mocked collectors
+- [x] **Docs:** Screenshot or short walkthrough of dashboard → detail
 
 ---
 
 ## 10. Refresh / polling UI
 
-- [ ] Manual refresh on detail (and dashboard if simple)
-- [ ] Auto-poll every 5–10 seconds (toggle on/off optional)
-- [ ] **Security:** Poll endpoints require auth; rate-limit lightly if trivial
-- [ ] Basic test or manual checklist for refresh behavior
-- [ ] **Docs:** Document poll interval and toggle
+- [x] Manual refresh on detail (and dashboard if simple)
+- [x] Auto-poll every 5–10 seconds (toggle on/off optional)
+- [x] **Security:** Poll endpoints require auth; rate-limit lightly if trivial
+- [x] Basic test or manual checklist for refresh behavior
+- [x] **Docs:** Document poll interval and toggle
 
 ---
 
 ## 11. Polish, local demo checklist, CI green
 
-- [ ] UI pass: readable empty/error states; consistent layout
-- [ ] **Security:** Final pass — `0.0.0.0:5243` bind documented, hashed passwords, no secrets in git, allowlisted SSH only
-- [ ] Ensure GitHub Actions CI still passes (`pytest` + lint if added)
-- [ ] **Docs:** Final README demo path — install → seed → run → login → add server → view metrics
-- [ ] Cross-check [requirements.md](./requirements.md) acceptance criteria and mark done there
+- [x] UI pass: readable empty/error states; consistent layout
+- [x] **Security:** Final pass — `0.0.0.0:5243` bind documented, hashed passwords, no secrets in git, allowlisted SSH only
+- [x] Ensure GitHub Actions CI still passes (`pytest` + lint if added)
+- [x] **Docs:** Final README demo path — install → seed → run → login → add server → view metrics
+- [x] Cross-check [requirements.md](./requirements.md) acceptance criteria and mark done there
 
 ---
 

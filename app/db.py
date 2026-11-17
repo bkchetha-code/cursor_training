@@ -1,11 +1,19 @@
-"""SQLite helpers — users table only for this step."""
+"""SQLite helpers — users + monitored servers."""
 
 from __future__ import annotations
 
+import re
 import sqlite3
 
 from flask import current_app, g
 from werkzeug.security import generate_password_hash
+
+_HOST_RE = re.compile(
+    r"^(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)*"
+    r"[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?|"
+    r"(?:(?:25[0-5]|2[0-4]\d|[01]?\d?\d)\.){3}"
+    r"(?:25[0-5]|2[0-4]\d|[01]?\d?\d)|localhost)$"
+)
 
 
 def get_db() -> sqlite3.Connection:
@@ -32,6 +40,20 @@ def init_db() -> None:
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT NOT NULL UNIQUE,
             password_hash TEXT NOT NULL
+        )
+        """
+    )
+    db.execute(
+        """
+        CREATE TABLE IF NOT EXISTS servers (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            host TEXT NOT NULL,
+            ssh_user TEXT NOT NULL DEFAULT 'root',
+            auth_type TEXT NOT NULL DEFAULT 'key',
+            key_path TEXT,
+            password TEXT,
+            created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
         )
         """
     )
@@ -69,3 +91,83 @@ def get_user_by_id(user_id: int) -> sqlite3.Row | None:
         "SELECT id, username, password_hash FROM users WHERE id = ?",
         (user_id,),
     ).fetchone()
+
+
+def update_user_password(user_id: int, password_hash: str) -> None:
+    db = get_db()
+    db.execute(
+        "UPDATE users SET password_hash = ? WHERE id = ?",
+        (password_hash, user_id),
+    )
+    db.commit()
+
+
+def validate_host(host: str) -> bool:
+    host = host.strip()
+    if not host or len(host) > 255:
+        return False
+    return bool(_HOST_RE.match(host))
+
+
+def list_servers() -> list[sqlite3.Row]:
+    return get_db().execute(
+        "SELECT id, name, host, ssh_user, auth_type, key_path, password, created_at "
+        "FROM servers ORDER BY name COLLATE NOCASE"
+    ).fetchall()
+
+
+def get_server(server_id: int) -> sqlite3.Row | None:
+    return get_db().execute(
+        "SELECT id, name, host, ssh_user, auth_type, key_path, password, created_at "
+        "FROM servers WHERE id = ?",
+        (server_id,),
+    ).fetchone()
+
+
+def create_server(
+    *,
+    name: str,
+    host: str,
+    ssh_user: str,
+    auth_type: str,
+    key_path: str | None,
+    password: str | None,
+) -> int:
+    db = get_db()
+    cur = db.execute(
+        """
+        INSERT INTO servers (name, host, ssh_user, auth_type, key_path, password)
+        VALUES (?, ?, ?, ?, ?, ?)
+        """,
+        (name, host, ssh_user, auth_type, key_path, password),
+    )
+    db.commit()
+    return int(cur.lastrowid)
+
+
+def update_server(
+    server_id: int,
+    *,
+    name: str,
+    host: str,
+    ssh_user: str,
+    auth_type: str,
+    key_path: str | None,
+    password: str | None,
+) -> None:
+    db = get_db()
+    db.execute(
+        """
+        UPDATE servers
+        SET name = ?, host = ?, ssh_user = ?, auth_type = ?, key_path = ?, password = ?
+        WHERE id = ?
+        """,
+        (name, host, ssh_user, auth_type, key_path, password, server_id),
+    )
+    db.commit()
+
+
+def delete_server(server_id: int) -> None:
+    db = get_db()
+    db.execute("DELETE FROM servers WHERE id = ?", (server_id,))
+    db.commit()
