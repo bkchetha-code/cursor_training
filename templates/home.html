@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Host Monitor{% endblock %}
+{% block main_class %} main-dashboard{% endblock %}
+
+{% block content %}
+<section class="dashboard" aria-labelledby="dash-heading">
+  <header class="dash-intro">
+    <h1 id="dash-heading">Monitoring dashboard</h1>
+    <p class="dash-lede">
+      Live host metrics for the machine running this app. Panels below are placeholders until metrics are wired.
+    </p>
+  </header>
+
+  <section class="servers-panel" aria-labelledby="servers-heading">
+    <h2 id="servers-heading" class="panel-label">Servers</h2>
+    <p class="servers-empty">
+      No servers yet — inventory arrives in a later phase. Metrics will always reflect localhost.
+    </p>
+  </section>
+
+  <div class="metrics-grid" role="list">
+    <article class="metric-card" role="listitem">
+      <h3 class="metric-title">CPU</h3>
+      <p class="metric-desc">Overall usage %</p>
+      <p class="metric-value is-empty">No data yet</p>
+    </article>
+    <article class="metric-card" role="listitem">
+      <h3 class="metric-title">Memory</h3>
+      <p class="metric-desc">Used / free</p>
+      <p class="metric-value is-empty">No data yet</p>
+    </article>
+    <article class="metric-card" role="listitem">
+      <h3 class="metric-title">Disk</h3>
+      <p class="metric-desc">Root filesystem</p>
+      <p class="metric-value is-empty">No data yet</p>
+    </article>
+    <article class="metric-card" role="listitem">
+      <h3 class="metric-title">Load average</h3>
+      <p class="metric-desc">1 / 5 / 15 min</p>
+      <p class="metric-value is-empty">No data yet</p>
+    </article>
+    <article class="metric-card" role="listitem">
+      <h3 class="metric-title">Network</h3>
+      <p class="metric-desc">RX / TX</p>
+      <p class="metric-value is-empty">No data yet</p>
+    </article>
+    <article class="metric-card" role="listitem">
+      <h3 class="metric-title">Listening ports</h3>
+      <p class="metric-desc">TCP / UDP</p>
+      <p class="metric-value is-empty">No data yet</p>
+    </article>
+    <article class="metric-card metric-card-wide" role="listitem">
+      <h3 class="metric-title">Processes</h3>
+      <p class="metric-desc">Top by CPU / memory</p>
+      <p class="metric-value is-empty">No data yet</p>
+    </article>
+  </div>
+</section>
+{% endblock %}

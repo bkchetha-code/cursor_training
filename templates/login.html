@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Sign in · Host Monitor{% endblock %}
+{% block main_class %} main-auth{% endblock %}
+
+{% block content %}
+<section class="auth" aria-labelledby="sign-in-heading">
+  <h1 id="sign-in-heading">Sign in</h1>
+  <p class="lede">Internal demo access for L1/L2/L3 and infra teams.</p>
+
+  {% if error %}
+  <p class="flash flash-error" role="alert">{{ error }}</p>
+  {% endif %}
+
+  <form class="auth-form" method="post" action="{{ url_for('main.login', next=request.args.get('next', '')) }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <label class="field">
+      <span>Username</span>
+      <input type="text" name="username" autocomplete="username" required value="admin">
+    </label>
+    <label class="field">
+      <span>Password</span>
+      <input type="password" name="password" autocomplete="current-password" required>
+    </label>
+    <button type="submit" class="btn">Sign in</button>
+  </form>
+</section>
+{% endblock %}
