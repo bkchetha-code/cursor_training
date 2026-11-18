@@ -13,7 +13,7 @@
           Live host metrics for localhost and inventory servers. Data refreshes every {{ poll_seconds }}s (toggle below).
         </p>
       </div>
-      <div class="poll-controls">
+      <div class="poll-controls glass-chip">
         <label class="toggle">
           <input type="checkbox" id="auto-refresh" checked>
           <span>Auto-refresh</span>
@@ -23,7 +23,7 @@
     </div>
   </header>
 
-  <section class="servers-panel" aria-labelledby="servers-heading">
+  <section class="servers-panel glass-panel" aria-labelledby="servers-heading">
     <div class="panel-head">
       <h2 id="servers-heading" class="panel-label">Servers</h2>
       <a class="text-link" href="{{ url_for('main.servers_list') }}">Manage inventory</a>
@@ -46,54 +46,108 @@
 
   <div class="summary-grid" id="summary-grid">
     {% for s in summaries %}
-    <a class="summary-card {% if not s.ok %}is-error{% endif %}"
+    <a class="summary-card glass-card {% if not s.ok %}is-error{% endif %}"
        href="{% if s.id %}{{ url_for('main.server_detail', server_id=s.id) }}{% else %}{{ url_for('main.localhost_detail') }}{% endif %}">
-      <h3>{{ s.name }}</h3>
-      <p class="mono muted">{{ s.host }}</p>
-      {% if s.ok %}
-      <p class="metric-line">CPU <strong>{{ s.cpu_percent if s.cpu_percent is not none else '—' }}%</strong>
-         · Mem <strong>{{ s.mem_percent if s.mem_percent is not none else '—' }}%</strong></p>
-      {% else %}
-      <p class="error-line">{{ s.error or 'Collection failed' }}</p>
-      {% endif %}
+      <span class="glass-icon glass-icon-server" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="6" rx="1.5" stroke="currentColor" stroke-width="1.6"/><rect x="3" y="14" width="18" height="6" rx="1.5" stroke="currentColor" stroke-width="1.6"/><circle cx="7" cy="7" r="1" fill="currentColor"/><circle cx="7" cy="17" r="1" fill="currentColor"/></svg>
+      </span>
+      <div>
+        <h3>{{ s.name }}</h3>
+        <p class="mono muted">{{ s.host }}</p>
+        {% if s.ok %}
+        <p class="metric-line">CPU <strong>{{ s.cpu_percent if s.cpu_percent is not none else '—' }}%</strong>
+           · Mem <strong>{{ s.mem_percent if s.mem_percent is not none else '—' }}%</strong></p>
+        {% else %}
+        <p class="error-line">{{ s.error or 'Collection failed' }}</p>
+        {% endif %}
+      </div>
     </a>
     {% endfor %}
   </div>
 
   <div class="metrics-grid" id="metrics-grid" data-poll-url="{{ url_for('main.api_metrics') }}" data-poll-seconds="{{ poll_seconds }}">
-    <article class="metric-card" data-metric="cpu">
-      <h3 class="metric-title">CPU</h3>
-      <p class="metric-desc">Overall usage %</p>
+    <article class="metric-card glass-card" data-metric="cpu">
+      <div class="metric-head">
+        <span class="glass-icon glass-icon-cpu" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="7" y="7" width="10" height="10" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><rect x="10" y="10" width="4" height="4" rx="0.8" fill="currentColor" opacity=".55"/></svg>
+        </span>
+        <div>
+          <h3 class="metric-title">CPU</h3>
+          <p class="metric-desc">Overall usage %</p>
+        </div>
+      </div>
       <p class="metric-value" id="m-cpu">Loading…</p>
     </article>
-    <article class="metric-card" data-metric="memory">
-      <h3 class="metric-title">Memory</h3>
-      <p class="metric-desc">Used / free</p>
+    <article class="metric-card glass-card" data-metric="memory">
+      <div class="metric-head">
+        <span class="glass-icon glass-icon-memory" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="7" width="20" height="10" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M6 7v10M10 7v10M14 7v10M18 7v10" stroke="currentColor" stroke-width="1.4" opacity=".7"/><path d="M7 17v3M17 17v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </span>
+        <div>
+          <h3 class="metric-title">Memory</h3>
+          <p class="metric-desc">Used / free</p>
+        </div>
+      </div>
       <p class="metric-value" id="m-memory">Loading…</p>
     </article>
-    <article class="metric-card" data-metric="disk">
-      <h3 class="metric-title">Disk</h3>
-      <p class="metric-desc">Root filesystem</p>
+    <article class="metric-card glass-card" data-metric="disk">
+      <div class="metric-head">
+        <span class="glass-icon glass-icon-disk" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="6" rx="8" ry="3" stroke="currentColor" stroke-width="1.6"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6" stroke="currentColor" stroke-width="1.6"/><path d="M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6" stroke="currentColor" stroke-width="1.6"/></svg>
+        </span>
+        <div>
+          <h3 class="metric-title">Disk</h3>
+          <p class="metric-desc">Root filesystem</p>
+        </div>
+      </div>
       <p class="metric-value" id="m-disk">Loading…</p>
     </article>
-    <article class="metric-card" data-metric="load">
-      <h3 class="metric-title">Load average</h3>
-      <p class="metric-desc">1 / 5 / 15 min</p>
+    <article class="metric-card glass-card" data-metric="load">
+      <div class="metric-head">
+        <span class="glass-icon glass-icon-load" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 16l4-6 3.5 4L16 7l4 10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 20h18" stroke="currentColor" stroke-width="1.5" opacity=".45"/></svg>
+        </span>
+        <div>
+          <h3 class="metric-title">Load average</h3>
+          <p class="metric-desc">1 / 5 / 15 min</p>
+        </div>
+      </div>
       <p class="metric-value" id="m-load">Loading…</p>
     </article>
-    <article class="metric-card" data-metric="network">
-      <h3 class="metric-title">Network</h3>
-      <p class="metric-desc">RX / TX</p>
+    <article class="metric-card glass-card" data-metric="network">
+      <div class="metric-head">
+        <span class="glass-icon glass-icon-network" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2.2 2.2M16.8 16.8L19 19M19 5l-2.2 2.2M5 19l2.2-2.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </span>
+        <div>
+          <h3 class="metric-title">Network</h3>
+          <p class="metric-desc">RX / TX</p>
+        </div>
+      </div>
       <p class="metric-value" id="m-network">Loading…</p>
     </article>
-    <article class="metric-card" data-metric="ports">
-      <h3 class="metric-title">Listening ports</h3>
-      <p class="metric-desc">TCP / UDP</p>
+    <article class="metric-card glass-card" data-metric="ports">
+      <div class="metric-head">
+        <span class="glass-icon glass-icon-ports" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M8 8h8v8H8z" stroke="currentColor" stroke-width="1.6"/><path d="M4 10v4M20 10v4M10 4h4M10 20h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/></svg>
+        </span>
+        <div>
+          <h3 class="metric-title">Listening ports</h3>
+          <p class="metric-desc">TCP / UDP</p>
+        </div>
+      </div>
       <p class="metric-value" id="m-ports">Loading…</p>
     </article>
-    <article class="metric-card metric-card-wide" data-metric="processes">
-      <h3 class="metric-title">Processes</h3>
-      <p class="metric-desc">Top by CPU / memory</p>
+    <article class="metric-card glass-card metric-card-wide" data-metric="processes">
+      <div class="metric-head">
+        <span class="glass-icon glass-icon-processes" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M7 9h10M7 13h7M7 17h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </span>
+        <div>
+          <h3 class="metric-title">Processes</h3>
+          <p class="metric-desc">Top by CPU / memory</p>
+        </div>
+      </div>
       <div class="metric-value" id="m-processes">Loading…</div>
     </article>
   </div>

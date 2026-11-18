@@ -12,7 +12,7 @@
         <h1>{{ server.name }}</h1>
         <p class="dash-lede mono">{{ server.host }} · {{ server.ssh_user }} · {{ server.auth_type }}</p>
       </div>
-      <div class="poll-controls">
+      <div class="poll-controls glass-chip">
         <label class="toggle">
           <input type="checkbox" id="auto-refresh" checked>
           <span>Auto-refresh</span>
@@ -29,14 +29,62 @@
   <div class="metrics-grid" id="metrics-grid"
        data-poll-url="{{ url_for('main.api_metrics', server_id=server.id if server.id is not none else 'local') }}"
        data-poll-seconds="{{ poll_seconds }}">
-    <article class="metric-card"><h3 class="metric-title">CPU</h3><p class="metric-desc">Overall usage %</p><p class="metric-value" id="m-cpu">—</p></article>
-    <article class="metric-card"><h3 class="metric-title">Memory</h3><p class="metric-desc">Used / free</p><p class="metric-value" id="m-memory">—</p></article>
-    <article class="metric-card"><h3 class="metric-title">Disk</h3><p class="metric-desc">Root filesystem</p><p class="metric-value" id="m-disk">—</p></article>
-    <article class="metric-card"><h3 class="metric-title">Load average</h3><p class="metric-desc">1 / 5 / 15 min</p><p class="metric-value" id="m-load">—</p></article>
-    <article class="metric-card"><h3 class="metric-title">Network</h3><p class="metric-desc">RX / TX</p><p class="metric-value" id="m-network">—</p></article>
-    <article class="metric-card"><h3 class="metric-title">Listening ports</h3><p class="metric-desc">TCP / UDP</p><p class="metric-value" id="m-ports">—</p></article>
-    <article class="metric-card metric-card-wide"><h3 class="metric-title">Processes</h3><p class="metric-desc">Top by CPU / memory</p><div class="metric-value" id="m-processes">—</div></article>
-    <article class="metric-card"><h3 class="metric-title">Uptime</h3><p class="metric-desc">Host uptime</p><p class="metric-value" id="m-uptime">—</p></article>
+    <article class="metric-card glass-card">
+      <div class="metric-head">
+        <span class="glass-icon glass-icon-cpu" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="7" y="7" width="10" height="10" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><rect x="10" y="10" width="4" height="4" rx="0.8" fill="currentColor" opacity=".55"/></svg></span>
+        <div><h3 class="metric-title">CPU</h3><p class="metric-desc">Overall usage %</p></div>
+      </div>
+      <p class="metric-value" id="m-cpu">—</p>
+    </article>
+    <article class="metric-card glass-card">
+      <div class="metric-head">
+        <span class="glass-icon glass-icon-memory" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="2" y="7" width="20" height="10" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M6 7v10M10 7v10M14 7v10M18 7v10" stroke="currentColor" stroke-width="1.4" opacity=".7"/><path d="M7 17v3M17 17v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+        <div><h3 class="metric-title">Memory</h3><p class="metric-desc">Used / free</p></div>
+      </div>
+      <p class="metric-value" id="m-memory">—</p>
+    </article>
+    <article class="metric-card glass-card">
+      <div class="metric-head">
+        <span class="glass-icon glass-icon-disk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="6" rx="8" ry="3" stroke="currentColor" stroke-width="1.6"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6" stroke="currentColor" stroke-width="1.6"/><path d="M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6" stroke="currentColor" stroke-width="1.6"/></svg></span>
+        <div><h3 class="metric-title">Disk</h3><p class="metric-desc">Root filesystem</p></div>
+      </div>
+      <p class="metric-value" id="m-disk">—</p>
+    </article>
+    <article class="metric-card glass-card">
+      <div class="metric-head">
+        <span class="glass-icon glass-icon-load" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 16l4-6 3.5 4L16 7l4 10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 20h18" stroke="currentColor" stroke-width="1.5" opacity=".45"/></svg></span>
+        <div><h3 class="metric-title">Load average</h3><p class="metric-desc">1 / 5 / 15 min</p></div>
+      </div>
+      <p class="metric-value" id="m-load">—</p>
+    </article>
+    <article class="metric-card glass-card">
+      <div class="metric-head">
+        <span class="glass-icon glass-icon-network" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2.2 2.2M16.8 16.8L19 19M19 5l-2.2 2.2M5 19l2.2-2.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+        <div><h3 class="metric-title">Network</h3><p class="metric-desc">RX / TX</p></div>
+      </div>
+      <p class="metric-value" id="m-network">—</p>
+    </article>
+    <article class="metric-card glass-card">
+      <div class="metric-head">
+        <span class="glass-icon glass-icon-ports" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M8 8h8v8H8z" stroke="currentColor" stroke-width="1.6"/><path d="M4 10v4M20 10v4M10 4h4M10 20h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/></svg></span>
+        <div><h3 class="metric-title">Listening ports</h3><p class="metric-desc">TCP / UDP</p></div>
+      </div>
+      <p class="metric-value" id="m-ports">—</p>
+    </article>
+    <article class="metric-card glass-card metric-card-wide">
+      <div class="metric-head">
+        <span class="glass-icon glass-icon-processes" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M7 9h10M7 13h7M7 17h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+        <div><h3 class="metric-title">Processes</h3><p class="metric-desc">Top by CPU / memory</p></div>
+      </div>
+      <div class="metric-value" id="m-processes">—</div>
+    </article>
+    <article class="metric-card glass-card">
+      <div class="metric-head">
+        <span class="glass-icon glass-icon-uptime" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5.5l3.5 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <div><h3 class="metric-title">Uptime</h3><p class="metric-desc">Host uptime</p></div>
+      </div>
+      <p class="metric-value" id="m-uptime">—</p>
+    </article>
   </div>
 </section>
 {% endblock %}
